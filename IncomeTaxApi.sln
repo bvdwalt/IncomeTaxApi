@@ -5,9 +5,9 @@ VisualStudioVersion = 17.0.31423.177
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IncomeTaxApi", "IncomeTaxApi.csproj", "{DAAECA9A-634B-440E-BC7F-9CE340B936F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IncomeTaxApi.Common", "IncomeTaxApi.Common\IncomeTaxApi.Common.csproj", "{1A6D13DE-F56D-4A35-BEE9-DBC3EFBF88B4}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IncomeTaxApi.Tests", "Tests\IncomeTaxApi.Tests\IncomeTaxApi.Tests.csproj", "{ECEF93B4-CB72-4097-B3C5-E30ACD0B5125}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IncomeTaxApi.Common", "src\IncomeTaxApi.Common\IncomeTaxApi.Common.csproj", "{3B3DE5FF-AC94-4DFA-A17F-B9B8946DE9C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,14 @@ Global
 		{DAAECA9A-634B-440E-BC7F-9CE340B936F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAAECA9A-634B-440E-BC7F-9CE340B936F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAAECA9A-634B-440E-BC7F-9CE340B936F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1A6D13DE-F56D-4A35-BEE9-DBC3EFBF88B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1A6D13DE-F56D-4A35-BEE9-DBC3EFBF88B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1A6D13DE-F56D-4A35-BEE9-DBC3EFBF88B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1A6D13DE-F56D-4A35-BEE9-DBC3EFBF88B4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ECEF93B4-CB72-4097-B3C5-E30ACD0B5125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ECEF93B4-CB72-4097-B3C5-E30ACD0B5125}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECEF93B4-CB72-4097-B3C5-E30ACD0B5125}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECEF93B4-CB72-4097-B3C5-E30ACD0B5125}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B3DE5FF-AC94-4DFA-A17F-B9B8946DE9C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B3DE5FF-AC94-4DFA-A17F-B9B8946DE9C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B3DE5FF-AC94-4DFA-A17F-B9B8946DE9C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B3DE5FF-AC94-4DFA-A17F-B9B8946DE9C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
