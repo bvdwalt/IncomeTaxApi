@@ -24,9 +24,9 @@ namespace IncomeTaxApi.Tests
         //}
 
         //[TestCaseSource(nameof(TestCases))]
-        //public void MonthlyIncomeTests(double grossIncome, int taxYear, int age, double expectedIncomeAfterTax)
+        //public async void MonthlyIncomeTests(double grossIncome, int taxYear, int age, double expectedIncomeAfterTax)
         //{
-        //    var result = _calculator.CalculateIncomeTaxPerMonth(grossIncome, age, taxYear);
+        //    var result = await _calculator.CalculateIncomeTaxPerMonth(grossIncome, age, taxYear);
 
         //    Assert.AreEqual(expectedIncomeAfterTax, result.IncomeAfterTax);
         //}
