@@ -31,7 +31,7 @@ namespace bvdwalt.IncomeTax
 
             TaxCaculator taxCalculator = new TaxCaculator();
 
-            TaxCalculationResult result = taxCalculator.CalculateIncomeTax(GrossIncome, Age, TaxYear);
+            TaxCalculationResult result = await taxCalculator.CalculateIncomeTax(GrossIncome, Age, TaxYear);
 
             if (result == null) return new NotFoundResult();
 
@@ -55,7 +55,7 @@ namespace bvdwalt.IncomeTax
 
             TaxCaculator taxCalculator = new TaxCaculator();
 
-            TaxCalculationResult result = taxCalculator.CalculateIncomeTaxPerMonth(GrossIncome, Age, TaxYear);
+            TaxCalculationResult result = await taxCalculator.CalculateIncomeTaxPerMonth(GrossIncome, Age, TaxYear);
 
             if (result == null) return new NotFoundResult();
 

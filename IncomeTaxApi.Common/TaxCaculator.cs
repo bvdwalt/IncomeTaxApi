@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IncomeTaxApi.Common
 {
@@ -46,7 +47,7 @@ namespace IncomeTaxApi.Common
             });
         }
 
-        public TaxCalculationResult CalculateIncomeTax(double grossIncome, int age, int taxYear)
+        public async Task<TaxCalculationResult> CalculateIncomeTax(double grossIncome, int age, int taxYear)
         {
             TaxYears.TryGetValue(taxYear, out var taxBracketsForYear);
             AgeGroupRebates.TryGetValue(taxYear, out var ageBracketForYear);
@@ -70,9 +71,9 @@ namespace IncomeTaxApi.Common
             return new TaxCalculationResult(IncomeAfterTax, grossIncome, totalTax, taxPercentage, taxYear, UIFContributionPa);
         }
 
-        public TaxCalculationResult CalculateIncomeTaxPerMonth(double grossIncome, int age, int taxYear)
+        public async Task<TaxCalculationResult> CalculateIncomeTaxPerMonth(double grossIncome, int age, int taxYear)
         {
-            var result = CalculateIncomeTax(grossIncome * 12, age, taxYear);
+            var result = await CalculateIncomeTax(grossIncome * 12, age, taxYear);
 
             result.GrossIncome = Math.Round(result.GrossIncome / 12, 2);
             result.IncomeAfterTax = Math.Round(result.IncomeAfterTax / 12, 2);
