@@ -7,14 +7,14 @@ namespace IncomeTaxApi.Tests
 {
     public class SouthAfricaTaxCalculatorTests
     {
-        private TaxCaculator _calculator;
+        private TaxCalculator _calculator;
         [OneTimeSetUp]
         public void Setup()
         {
-            _calculator = new TaxCaculator();
+            _calculator = new TaxCalculator();
         }
 
-        public static IEnumerable<TestCaseData> TestCases
+        public static IEnumerable<TestCaseData> MonthlyTestCases
         {
             get
             {
@@ -24,10 +24,28 @@ namespace IncomeTaxApi.Tests
             }
         }
 
-        [TestCaseSource(nameof(TestCases))]
+        [TestCaseSource(nameof(MonthlyTestCases))]
         public async Task MonthlyIncomeTests(double grossIncome, int taxYear, int age, double expectedIncomeAfterTax)
         {
-            var result = await _calculator.CalculateIncomeTaxPerMonth(grossIncome, age, taxYear);
+            var result = _calculator.CalculateIncomeTaxPerMonth(grossIncome, age, taxYear);
+
+            Assert.AreEqual(expectedIncomeAfterTax, result.IncomeAfterTax);
+        }
+        
+        public static IEnumerable<TestCaseData> YearlyTestCases
+        {
+            get
+            {
+                yield return new TestCaseData(120000, 2021, 40, 112158);
+                yield return new TestCaseData(240000, 2021, 40, 206904.56);
+                yield return new TestCaseData(1800000, 2021, 65, 1146394.56);
+            }
+        }
+
+        [TestCaseSource(nameof(YearlyTestCases))]
+        public async Task YearlyIncomeTests(double grossIncome, int taxYear, int age, double expectedIncomeAfterTax)
+        {
+            var result = _calculator.CalculateIncomeTax(grossIncome, age, taxYear);
 
             Assert.AreEqual(expectedIncomeAfterTax, result.IncomeAfterTax);
         }

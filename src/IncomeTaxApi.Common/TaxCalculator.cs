@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace IncomeTaxApi.Common
 {
-    public class TaxCaculator
+    public class TaxCalculator
     {
         private readonly double MaxUIFContributionPm = 177.12;
         private static Dictionary<int, List<TaxBracket>> TaxYears = new Dictionary<int, List<TaxBracket>>();
         private static Dictionary<int, List<AgeBracket>> AgeGroupRebates = new Dictionary<int, List<AgeBracket>>();
-        public TaxCaculator()
+        public TaxCalculator()
         {
             TaxYears = new Dictionary<int, List<TaxBracket>>();
             AgeGroupRebates = new Dictionary<int, List<AgeBracket>>();
@@ -47,13 +47,16 @@ namespace IncomeTaxApi.Common
             });
         }
 
-        public async Task<TaxCalculationResult> CalculateIncomeTax(double grossIncome, int age, int taxYear)
+        public TaxCalculationResult CalculateIncomeTax(double grossIncome, int age, int taxYear)
         {
             TaxYears.TryGetValue(taxYear, out var taxBracketsForYear);
             AgeGroupRebates.TryGetValue(taxYear, out var ageBracketForYear);
 
             if (taxBracketsForYear == null)
-                return null;
+                return new TaxCalculationResult() { ErrorText = $"Tax year {taxYear} not found" };
+
+            if (ageBracketForYear == null)
+                return new TaxCalculationResult() { ErrorText = $"Age bracket for Tax year {taxYear} and Age {age} not found" };
 
             var bracket = taxBracketsForYear.Single(b => grossIncome >= b.LowerBound && grossIncome <= b.UpperBound);
             var ageBracket = ageBracketForYear.Single(b => age >= b.LowerBoundAge && age <= b.UpperBoundAge);
@@ -71,9 +74,9 @@ namespace IncomeTaxApi.Common
             return new TaxCalculationResult(IncomeAfterTax, grossIncome, totalTax, taxPercentage, taxYear, UIFContributionPa);
         }
 
-        public async Task<TaxCalculationResult> CalculateIncomeTaxPerMonth(double grossIncome, int age, int taxYear)
+        public TaxCalculationResult CalculateIncomeTaxPerMonth(double grossIncome, int age, int taxYear)
         {
-            var result = await CalculateIncomeTax(grossIncome * 12, age, taxYear);
+            var result = CalculateIncomeTax(grossIncome * 12, age, taxYear);
 
             result.GrossIncome = Math.Round(result.GrossIncome / 12, 2);
             result.IncomeAfterTax = Math.Round(result.IncomeAfterTax / 12, 2);

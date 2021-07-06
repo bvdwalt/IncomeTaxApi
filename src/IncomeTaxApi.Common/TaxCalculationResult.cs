@@ -2,6 +2,10 @@
 {
     public class TaxCalculationResult
     {
+        public TaxCalculationResult()
+        {
+
+        }
         public TaxCalculationResult(double incomeAfterTax, double grossIncome, double totalTax, double taxPercentage, int taxYear, double uIFContributionPa)
         {
             IncomeAfterTax = incomeAfterTax;
@@ -17,5 +21,6 @@
         public double TaxPercentage { get; set; }
         public int TaxYear { get; set; }
         public double UIFContribution { get; set; }
+        public string ErrorText { get; set; }
     }
 }

@@ -7,11 +7,13 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace bvdwalt.IncomeTax
 {
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public static class IncomeTax
     {
         [FunctionName("IncomeTaxPerAnnum")]
@@ -20,6 +22,7 @@ namespace bvdwalt.IncomeTax
         [OpenApiParameter(name: "GrossIncome", In = ParameterLocation.Query, Required = true, Type = typeof(double), Description = "Your per annum income before tax gets deducted")]
         [OpenApiParameter(name: "TaxYear", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "The Tax Year this income is for")]
         [OpenApiParameter(name: "Age", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "Your Age during this tax year")]
+        [OpenApiParameter(name: "SpecificProperty", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "If you only want a single property to be returned")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public static async Task<IActionResult> IncomeTaxPerAnnum(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
@@ -28,14 +31,20 @@ namespace bvdwalt.IncomeTax
             double GrossIncome = double.Parse(req.Query["GrossIncome"]);
             int TaxYear = int.Parse(req.Query["TaxYear"]);
             int Age = int.Parse(req.Query["Age"]);
+            string SpecificProperty = req.Query["SpecificProperty"];
 
-            TaxCaculator taxCalculator = new TaxCaculator();
+            TaxCalculator taxCalculator = new TaxCalculator();
 
-            TaxCalculationResult result = await taxCalculator.CalculateIncomeTax(GrossIncome, Age, TaxYear);
+            TaxCalculationResult result = taxCalculator.CalculateIncomeTax(GrossIncome, Age, TaxYear);
 
-            if (result == null) return new NotFoundResult();
+            if (!string.IsNullOrWhiteSpace(result.ErrorText)) return new NotFoundObjectResult(new OpenApiError(new Microsoft.OpenApi.Exceptions.OpenApiException(result.ErrorText)));
 
-            return new OkObjectResult(result);
+            if(!string.IsNullOrWhiteSpace(SpecificProperty))
+            {
+                return ParseSpecificProperty(result, SpecificProperty);
+            }
+
+            return new JsonResult(result);
         }
 
         [FunctionName("IncomeTaxPerMonth")]
@@ -44,6 +53,7 @@ namespace bvdwalt.IncomeTax
         [OpenApiParameter(name: "GrossIncome", In = ParameterLocation.Query, Required = true, Type = typeof(double), Description = "Your per month income before tax gets deducted")]
         [OpenApiParameter(name: "TaxYear", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "The Tax Year this income is for")]
         [OpenApiParameter(name: "Age", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "Your Age during this tax year")]
+        [OpenApiParameter(name: "SpecificProperty", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "If you only want a single property to be returned")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public static async Task<IActionResult> IncomeTaxPerMonth(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
@@ -52,15 +62,50 @@ namespace bvdwalt.IncomeTax
             double GrossIncome = double.Parse(req.Query["GrossIncome"]);
             int TaxYear = int.Parse(req.Query["TaxYear"]);
             int Age = int.Parse(req.Query["Age"]);
+            string SpecificProperty = req.Query["SpecificProperty"];
 
-            TaxCaculator taxCalculator = new TaxCaculator();
+            TaxCalculator taxCalculator = new TaxCalculator();
 
-            TaxCalculationResult result = await taxCalculator.CalculateIncomeTaxPerMonth(GrossIncome, Age, TaxYear);
+            TaxCalculationResult result = taxCalculator.CalculateIncomeTaxPerMonth(GrossIncome, Age, TaxYear);
 
-            if (result == null) return new NotFoundResult();
+            if (!string.IsNullOrWhiteSpace(result.ErrorText)) throw new Microsoft.OpenApi.Exceptions.OpenApiException(result.ErrorText);
 
-            return new OkObjectResult(result);
+            if (!string.IsNullOrWhiteSpace(SpecificProperty))
+            {
+                return ParseSpecificProperty(result, SpecificProperty);
+            }
+
+            return new JsonResult(result);
         }
+
+        private static OkObjectResult ParseSpecificProperty(TaxCalculationResult result, string SpecificProperty)
+        {
+            double propertyValue;
+            switch (SpecificProperty)
+            {
+                case nameof(TaxCalculationResult.IncomeAfterTax):
+                    propertyValue = result.IncomeAfterTax;
+                    break;
+                case nameof(TaxCalculationResult.TotalTax):
+                    propertyValue = result.TotalTax;
+                    break;
+                case nameof(TaxCalculationResult.UIFContribution):
+                    propertyValue = result.UIFContribution;
+                    break;
+                case nameof(TaxCalculationResult.GrossIncome):
+                    propertyValue = result.GrossIncome;
+                    break;
+                case nameof(TaxCalculationResult.TaxPercentage):
+                    propertyValue = result.TaxPercentage;
+                    break;
+                case nameof(TaxCalculationResult.TaxYear):
+                    propertyValue = result.TaxYear;
+                    break;
+                default: throw new Microsoft.OpenApi.Exceptions.OpenApiException($"Property {SpecificProperty} not found");
+            }
+            return new OkObjectResult(propertyValue);
+        }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     }
 }
 
