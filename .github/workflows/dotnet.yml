@@ -1,16 +1,15 @@
-name: .NET
+name: Build & Release
 
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -21,6 +20,16 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration Release --output ./output
     - name: Test
       run: dotnet test --no-build --verbosity normal
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Functions Action
+        uses: Azure/functions-action@v1.4.0
+        with:
+          app-name: 'bvdwalt-IncomeTax'
+          slot-name: 'production'
+          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
