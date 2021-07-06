@@ -6,9 +6,10 @@ on:
     
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
+  AZURE_FUNCTIONAPP_NAME: 'bvdwalt-IncomeTax'
 
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -19,17 +20,14 @@ jobs:
         include-prerelease: true
     - name: Restore dependencies
       run: dotnet restore
+    - name: Test
+      run: dotnet test
     - name: Build
       run: dotnet build --no-restore --configuration Release --output ./output
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Azure Functions Action
-        uses: Azure/functions-action@v1.4.0
-        with:
-          app-name: 'bvdwalt-IncomeTax'
-          slot-name: 'production'
-          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+    - name: Release To Azure Functions Action
+      uses: Azure/functions-action@v1.4.0
+      with:
+        app-name: '${{ env.AZURE_FUNCTIONAPP_NAME }}'
+        slot-name: 'production'
+        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}

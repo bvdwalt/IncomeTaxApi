@@ -17,13 +17,13 @@ namespace bvdwalt.IncomeTax
     public static class IncomeTax
     {
         [FunctionName("IncomeTaxPerAnnum")]
-        [OpenApiOperation(operationId: "IncomeTaxPerAnnum", tags: new[] { "name" })]
+        [OpenApiOperation(operationId: "IncomeTaxPerAnnum", tags: new[] { "Personal Income Tax South Africa" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiParameter(name: "GrossIncome", In = ParameterLocation.Query, Required = true, Type = typeof(double), Description = "Your per annum income before tax gets deducted")]
         [OpenApiParameter(name: "TaxYear", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "The Tax Year this income is for")]
         [OpenApiParameter(name: "Age", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "Your Age during this tax year")]
         [OpenApiParameter(name: "SpecificProperty", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "If you only want a single property to be returned")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/json", bodyType: typeof(string), Description = "The OK response")]
         public static async Task<IActionResult> IncomeTaxPerAnnum(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
@@ -48,13 +48,13 @@ namespace bvdwalt.IncomeTax
         }
 
         [FunctionName("IncomeTaxPerMonth")]
-        [OpenApiOperation(operationId: "IncomeTaxPerMonth", tags: new[] { "name" })]
+        [OpenApiOperation(operationId: "IncomeTaxPerMonth", tags: new[] { "Personal Income Tax South Africa" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiParameter(name: "GrossIncome", In = ParameterLocation.Query, Required = true, Type = typeof(double), Description = "Your per month income before tax gets deducted")]
         [OpenApiParameter(name: "TaxYear", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "The Tax Year this income is for")]
         [OpenApiParameter(name: "Age", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "Your Age during this tax year")]
         [OpenApiParameter(name: "SpecificProperty", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "If you only want a single property to be returned")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/json", bodyType: typeof(string), Description = "The OK response")]
         public static async Task<IActionResult> IncomeTaxPerMonth(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
@@ -78,7 +78,7 @@ namespace bvdwalt.IncomeTax
             return new JsonResult(result);
         }
 
-        private static OkObjectResult ParseSpecificProperty(TaxCalculationResult result, string SpecificProperty)
+        private static JsonResult ParseSpecificProperty(TaxCalculationResult result, string SpecificProperty)
         {
             double propertyValue;
             switch (SpecificProperty)
@@ -103,7 +103,7 @@ namespace bvdwalt.IncomeTax
                     break;
                 default: throw new Microsoft.OpenApi.Exceptions.OpenApiException($"Property {SpecificProperty} not found");
             }
-            return new OkObjectResult(propertyValue);
+            return new JsonResult(propertyValue);
         }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     }
