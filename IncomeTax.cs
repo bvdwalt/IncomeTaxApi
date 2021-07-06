@@ -86,8 +86,8 @@ namespace bvdwalt.IncomeTax
                 case nameof(TaxCalculationResult.IncomeAfterTax):
                     propertyValue = result.IncomeAfterTax;
                     break;
-                case nameof(TaxCalculationResult.TotalTax):
-                    propertyValue = result.TotalTax;
+                case nameof(TaxCalculationResult.TotalDeductions):
+                    propertyValue = result.TotalDeductions;
                     break;
                 case nameof(TaxCalculationResult.UIFContribution):
                     propertyValue = result.UIFContribution;

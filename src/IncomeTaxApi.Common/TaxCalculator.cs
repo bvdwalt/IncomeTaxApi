@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace IncomeTaxApi.Common
 {
     public class TaxCalculator
     {
+        private readonly double UIFLevyPercentage = .01;
         private readonly double MaxUIFContributionPm = 177.12;
         private static Dictionary<int, List<TaxBracket>> TaxYears = new Dictionary<int, List<TaxBracket>>();
         private static Dictionary<int, List<AgeBracket>> AgeGroupRebates = new Dictionary<int, List<AgeBracket>>();
+
         public TaxCalculator()
         {
             TaxYears = new Dictionary<int, List<TaxBracket>>();
@@ -61,27 +61,29 @@ namespace IncomeTaxApi.Common
             var bracket = taxBracketsForYear.Single(b => grossIncome >= b.LowerBound && grossIncome <= b.UpperBound);
             var ageBracket = ageBracketForYear.Single(b => age >= b.LowerBoundAge && age <= b.UpperBoundAge);
 
-            var totalTax = bracket.BaseTax == 0 ? bracket.TaxPercentage * grossIncome : bracket.BaseTax + (bracket.TaxPercentage * (grossIncome - bracket.ThresholdAmount));
+            var totalDeductions = bracket.BaseTax == 0 ? (bracket.TaxPercentage * grossIncome) : bracket.BaseTax + (bracket.TaxPercentage * (grossIncome - bracket.ThresholdAmount));
 
-            totalTax -= ageBracket.RebateAmount;
+            totalDeductions -= ageBracket.RebateAmount;
 
-            var UIFContributionPa = (.01 * grossIncome) / 12 > MaxUIFContributionPm ? MaxUIFContributionPm * 12 : .01 * grossIncome;
+            var UIFOnGrossIncome = UIFLevyPercentage * grossIncome;
 
-            var IncomeAfterTax = Math.Round(grossIncome - totalTax - UIFContributionPa, 2);
+            var UIFContributionPa = (UIFOnGrossIncome / 12) > MaxUIFContributionPm ? MaxUIFContributionPm * 12 : UIFOnGrossIncome;
 
-            var taxPercentage = Math.Round((totalTax / grossIncome) * 100, 2);
+            var IncomeAfterTax = grossIncome - totalDeductions - UIFContributionPa;
 
-            return new TaxCalculationResult(IncomeAfterTax, grossIncome, totalTax, taxPercentage, taxYear, UIFContributionPa);
+            var taxPercentage = (totalDeductions / grossIncome) * 100;
+
+            return new TaxCalculationResult(IncomeAfterTax, grossIncome, totalDeductions, taxPercentage, taxYear, UIFContributionPa);
         }
 
         public TaxCalculationResult CalculateIncomeTaxPerMonth(double grossIncome, int age, int taxYear)
         {
             var result = CalculateIncomeTax(grossIncome * 12, age, taxYear);
 
-            result.GrossIncome = Math.Round(result.GrossIncome / 12, 2);
-            result.IncomeAfterTax = Math.Round(result.IncomeAfterTax / 12, 2);
-            result.TotalTax = Math.Round(result.TotalTax / 12, 2);
-            result.UIFContribution = Math.Round(result.UIFContribution / 12, 2);
+            result.GrossIncome = result.GrossIncome / 12;
+            result.IncomeAfterTax = result.IncomeAfterTax / 12;
+            result.TotalDeductions = result.TotalDeductions / 12;
+            result.UIFContribution = result.UIFContribution / 12;
 
             return result;
         }
