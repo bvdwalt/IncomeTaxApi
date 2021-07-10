@@ -22,7 +22,7 @@ namespace bvdwalt.IncomeTax
         [OpenApiParameter(name: "GrossIncome", In = ParameterLocation.Query, Required = true, Type = typeof(double), Description = "Your per annum income before tax gets deducted")]
         [OpenApiParameter(name: "TaxYear", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "The Tax Year this income is for")]
         [OpenApiParameter(name: "Age", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "Your Age during this tax year")]
-        [OpenApiParameter(name: "SpecificProperty", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "If you only want a single property to be returned")]
+        [OpenApiParameter(name: "SpecificProperty", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "If you only want a single property to be returned, e.g. IncomeAfterTax")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/json", bodyType: typeof(string), Description = "The OK response")]
         public static async Task<IActionResult> IncomeTaxPerAnnum(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
@@ -53,7 +53,7 @@ namespace bvdwalt.IncomeTax
         [OpenApiParameter(name: "GrossIncome", In = ParameterLocation.Query, Required = true, Type = typeof(double), Description = "Your per month income before tax gets deducted")]
         [OpenApiParameter(name: "TaxYear", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "The Tax Year this income is for")]
         [OpenApiParameter(name: "Age", In = ParameterLocation.Query, Required = true, Type = typeof(int), Description = "Your Age during this tax year")]
-        [OpenApiParameter(name: "SpecificProperty", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "If you only want a single property to be returned")]
+        [OpenApiParameter(name: "SpecificProperty", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "If you only want a single property to be returned, e.g. IncomeAfterTax")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/json", bodyType: typeof(string), Description = "The OK response")]
         public static async Task<IActionResult> IncomeTaxPerMonth(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
