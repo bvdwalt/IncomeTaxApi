@@ -1,4 +1,4 @@
-﻿namespace IncomeTaxApi.Common
+﻿namespace bvdwalt.IncomeTax.Common
 {
     public class TaxCalculationResult
     {
@@ -11,16 +11,23 @@
             IncomeAfterTax = incomeAfterTax;
             GrossIncome = grossIncome;
             TotalDeductions = totalDeductions;
-            TaxPercentage = taxPercentage;
+            EffectiveTaxRate = taxPercentage;
             TaxYear = taxYear;
             UIFContribution = uIFContributionPa;
         }
         public double IncomeAfterTax { get; set; }
         public double GrossIncome { get; set; }
         public double TotalDeductions { get; set; }
-        public double TaxPercentage { get; set; }
+        public double EffectiveTaxRate { get; set; }
         public int TaxYear { get; set; }
         public double UIFContribution { get; set; }
         public string ErrorText { get; set; }
+
+        public override string ToString()
+        {
+            if (string.IsNullOrWhiteSpace(ErrorText)) return ErrorText;
+
+            return $"TY:{TaxYear}, Gross: {GrossIncome}, AfterTax:{IncomeAfterTax}, Deductions:{TotalDeductions}, EffectiveTaxRate: {EffectiveTaxRate}, UIFContribution:{UIFContribution}";
+        }
     }
 }

@@ -1,17 +1,16 @@
-using IncomeTaxApi.Common;
+using bvdwalt.IncomeTax.Common;
 using NUnit.Framework;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace IncomeTaxApi.Tests
 {
     public class SouthAfricaTaxCalculatorTests
     {
-        private TaxCalculator _calculator;
+        private ITaxCalculatorService _calculator;
         [OneTimeSetUp]
         public void Setup()
         {
-            _calculator = new TaxCalculator();
+            _calculator = new TaxCalculatorService();
         }
 
         public static IEnumerable<TestCaseData> MonthlyTestCases
@@ -51,7 +50,7 @@ namespace IncomeTaxApi.Tests
         [TestCaseSource(nameof(YearlyTestCases))]
         public void YearlyIncomeTests(double grossIncome, int taxYear, int age, double expectedIncomeAfterTax)
         {
-            var result = _calculator.CalculateIncomeTax(grossIncome, age, taxYear);
+            var result = _calculator.CalculateIncomeTaxPerAnnum(grossIncome, age, taxYear);
 
             Assert.AreEqual(expectedIncomeAfterTax, result.IncomeAfterTax);
         }
