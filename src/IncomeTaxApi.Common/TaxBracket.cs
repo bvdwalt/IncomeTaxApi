@@ -1,17 +1,17 @@
-﻿namespace bvdwalt.IncomeTax.Common
+﻿namespace IncomeTaxApi.Common
 {
     public class TaxBracket
     {
-        public TaxBracket(double lowerBoundIncomeBeforeTax, double upperBoundIncomeBeforeTax, double taxPercentage, double baseTax, double thresholdAmount = 0)
+        public TaxBracket(double lowerBound, double upperBound, double taxPercentage, double baseTax, double thresholdAmount = 0)
         {
-            LowerBoundIncomeBeforeTax = lowerBoundIncomeBeforeTax;
-            UpperBoundIncomeBeforeTax = upperBoundIncomeBeforeTax;
+            LowerBound = lowerBound;
+            UpperBound = upperBound;
             TaxPercentage = taxPercentage;
             BaseTax = baseTax;
-            ThresholdAmount = thresholdAmount == 0 ? lowerBoundIncomeBeforeTax - 1 : thresholdAmount;
+            ThresholdAmount = thresholdAmount == 0 ? lowerBound - 1 : thresholdAmount;
         }
-        public double LowerBoundIncomeBeforeTax { get; set; }
-        public double UpperBoundIncomeBeforeTax { get; set; }
+        public double LowerBound { get; set; }
+        public double UpperBound { get; set; }
         public double TaxPercentage { get; set; }
         public double BaseTax { get; set; }
         public double ThresholdAmount { get; set; }

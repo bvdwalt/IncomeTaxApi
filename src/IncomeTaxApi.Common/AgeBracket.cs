@@ -1,4 +1,4 @@
-﻿namespace bvdwalt.IncomeTax.Common
+﻿namespace IncomeTaxApi.Common
 {
     public class AgeBracket
     {
@@ -10,6 +10,6 @@
         }
         public int LowerBoundAge { get; set; }
         public int UpperBoundAge { get; set; }
-        public double RebateAmount { get; set; }
+        public double RebateAmount { get; set; } 
     }
 }
